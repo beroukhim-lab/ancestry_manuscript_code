@@ -27,12 +27,48 @@ Some previously generated input files are restricted access. You must apply for 
 23q4 Omics Signatures -> ./data/23q4_omics_signatures.csv
 22q2 CRISPR Gene Effect -> ./data/22q2_crispr_gene_effect.csv
 23q4 OmicsSignatures -> ./data/23q4_omics_signatures.csv
+CCLE_SNP.Birdseed.Calls_2013-07-29.tar.gz -> ./snp_array_data
 ```
 
-#### From jupyter notebooks:
+#### Processing CCLE SNP6 genotyping
 ```
-figure_1d.ipynb -> ./data/lm_ancestry_associated_dependency_pvals.txt
+#Requires Python-3.6 (must be in PATH)
+#Requires R-4.0 (must be in PATH)
+#Requires Bcftools (must be in PATH)
+#Requires Tabix (must be in PATH)
+
+#Download the SNP6 annotation file
+cd ./snp_array_data
+wget https://software.broadinstitute.org/cancer/cga/sites/default/files/data/tools/contest/GenomeWideSNP_6.na30.annot.hg19.csv.pickle.gz
+
+#Download the hg19 fasta
+cd ./snp_array_data
+wget https://ftp.1000genomes.ebi.ac.uk/vol1/ftp/technical/reference/human_g1k_v37.fasta.gz
+gzip -d human_g1k_v37.fasta.gz
+wget https://ftp.1000genomes.ebi.ac.uk/vol1/ftp/technical/reference/human_g1k_v37.fasta.fai
+
+
+#Process the vcf files. This script will take a long time to run, but can easily be modified to process vcf files in parallel
+cd ./snp_array_data
+bash process_ccle_genotyping.sh
+
+############
+#Imputation#
+############
+#Step 1) Perform genotype phasing and imputation using the Michigan Imputation Server
+#Step 2) Download and unzip the phased/imputed vcf files. The zipped file is password protected, follow unpacking instructions.
+#Step 3) Add the 'pe_' prefix to the 
+
+
+#Cat the phased/imputed vcfs, pass filter, then zip and index
+cd ./snp_array_data
+bcftools concat -o ccle_snp6_phased_imputed.vcf pe_*
+bcftools view -f PASS ccle_snp6_phased_imputed.vcf > ccle_all_called.vcf
+bgzip ccle_all_called.vcf
+tabix -p vcf ccle_all_called.vcf.gz
+
 ```
+
 
 
 #### From shell scripts:
@@ -53,7 +89,7 @@ gzip -d hg38.refGene.gtf.gz
 Download and unpack Cosmic_CancerGeneCensus_Tsv_v97_GRCh38.tar -> ./data/cosmic_genes.csv
 ```
 
-#### From gnomAD. Note: Very large
+#### From gnomAD. Note: Total file size is >5 TB
 ```
 #Download the hgdp+1kg subset info file
 gsutil cp https://storage.googleapis.com/gcp-public-data--gnomad/release/3.1.2/vcf/genomes/gnomad.genomes.v3.1.2.hgdp_1kg_subset_sample_meta.tsv.bgz ./data
@@ -71,6 +107,11 @@ do
 gsutil cp https://storage.googleapis.com/gcp-public-data--gnomad/release/3.1.2/vcf/genomes/gnomad.genomes.v3.1.2.sites.chr${i}.vcf.bgz ./data
 gsutil cp https://storage.googleapis.com/gcp-public-data--gnomad/release/3.1.2/vcf/genomes/gnomad.genomes.v3.1.2.sites.chr${i}.vcf.bgz.tbi ./data
 done
+```
+
+#### From jupyter notebooks:
+```
+figure_1d.ipynb -> ./data/lm_ancestry_associated_dependency_pvals.txt
 ```
 
 
