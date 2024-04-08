@@ -7,7 +7,7 @@ All jupyter notebooks were originally run in a GCP VM environment with 64 GB of 
 The shell scripts in this repository were originally run in a compute environment with 32 CPU cores and 128 GB of memory. These scripts assume such resources are available. These scripts can be modified to run on a single CPU core, but will take a long time to fully execute. 
 
 ## Generating input files
-Download or create the input files and name them as indicated. All input files must be in the ./data directory of this repository.
+Download or create the input files and name them as indicated. All input files must be in the ./data directory of this repository unless otherwise indicated.
 Some previously generated input files are restricted access. You must apply for access to get download permissions.
 
 #### From the DepMap web portal (https://depmap.org/portal/download/all/): 
@@ -28,6 +28,13 @@ Some previously generated input files are restricted access. You must apply for 
 22q2 CRISPR Gene Effect -> ./data/22q2_crispr_gene_effect.csv
 23q4 OmicsSignatures -> ./data/23q4_omics_signatures.csv
 CCLE_SNP.Birdseed.Calls_2013-07-29.tar.gz -> ./snp_array_data
+OmicsGuideMutationsBinaryKY -> ./data/OmicsGuideMutationsBinaryKY.csv
+OmicsGuideMutationsBinaryHumagne -> ./data/OmicsGuideMutationsBinaryHumagne.csv
+OmicsGuideMutationsBinaryAvana -> ./data/OmicsGuideMutationsBinaryAvana.csv
+AvanaGuideMap -> ./data/AvanaGuideMap.csv
+HumagneGuideMap -> ./data/HumagneGUideMap.csv
+KYGUideMap -> ./data/KYGuideMap.csv
+AchillesCommonEssentialControls -> ./data/common_essentials.csv
 ```
 
 #### Processing CCLE SNP6 genotyping
@@ -67,12 +74,42 @@ bcftools view -f PASS ccle_snp6_phased_imputed.vcf > ccle_all_called.vcf
 bgzip ccle_all_called.vcf
 tabix -p vcf ccle_all_called.vcf.gz
 
+
+#Extract the sample headers, which is a useful input for many scripts
+cd ./snp_array_data
+bcftools query -l ccle_all_called.vcf.gz > ../data/ccle.vcf.sample.names.txt
+
 ```
 
-
-
-#### From shell scripts:
+#### From RFMIXv2
 ```
+#Requires RFMIXv2 (https://github.com/slowkoni/rfmix)
+#Requres Samtools-v1.9 (in PATH)
+#Requires Bcftools (in PATH)
+
+#Download the RFMIXv2 reference panel
+cd ../data
+for i in {1..22};
+do
+wget http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/1000_genomes_project/release/20190312_biallelic_SNV_and_INDEL/ALL.chr${i}.shapeit2_integrated_snvindels_v2a_27022019.GRCh38.phased.vcf.gz
+
+wget http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/1000_genomes_project/release/20190312_biallelic_SNV_and_INDEL/ALL.chr${i}.shapeit2_integrated_snvindels_v2a_27022019.GRCh38.phased.vcf.gz.tbi
+done
+
+
+```
+
+#### From R scripts:
+```
+#Create depmap_cell_lineage.csv
+#Requires R-4.0 (or higher)
+cd ./code
+Rscript create_depmap_cell_lineage_file.R
+```
+
+#### From Doench et. al. 2016
+```
+Mismatch Tab from Supplemental Table 19 -> ./data/Doench_Data.txt
 ```
 
 #### From UCSC genome browser:
