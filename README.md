@@ -9,7 +9,7 @@ The shell scripts in this repository were originally run in a compute environmen
 ## Input files
 Download the input files and name them as indicated. All input files must be in the ./data directory of this repository.
 
-'''
+```
 
 From the DepMap web portal: \
 21Q4 Achilles Guide Map -> ./data/21q4_Achilles_guide_map.csv \
@@ -19,17 +19,5 @@ From the DepMap web portal: \
 22q1 Achilles Gene Effect -> ./data/22q1_Achilles_gene_effect.csv \
 22q1 Achilles Guide Map -> ./data/22q1_Achilles_guide_map.csv \
 22q1 Achilles Logfold Change -> ./data/22q1_Achilles_logfold_change.csv \
-
-'''
-
-
-
-
-
-
-
-
-code chunk for downloading data:
-```
 
 ```
