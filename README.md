@@ -4,7 +4,7 @@ This repository contains all code for performing the analyses and generating the
 ## Requirements
 All jupyter notebooks were originally run in a GCP VM environment with 64 GB of memory and 8 CPU cores. These notebooks were adapted to run on a machine with 64 GB of memory and a Ryzen 7 series CPU. These notebooks are untested in environments with lower compute resources, but it is expected that most notebooks will fully execute with only 8 GB of memory and a single CPU. A subset of notebooks require a large memory overhead and are not expected to execute with less than 32 GB of memory.
 
-The shell scripts in this repository were originally run in a compute environment with 32 CPU cores and 128 GB of memory. These scripts assume such resources are available. These scripts can be modified to run on a single CPU core, but will take a long time to fully execute. 
+The shell scripts in this repository were originally run in a compute environment with 32 CPU cores and 128 GB of memory. These scripts have been modified to run on a single CPU core (at a significant time cost), but can be modified to run in parallel.
 
 ## Generating input files
 Download or create the input files and name them as indicated. All input files must be in the ./data directory of this repository unless otherwise indicated.
@@ -81,20 +81,33 @@ bcftools query -l ccle_all_called.vcf.gz > ../data/ccle.vcf.sample.names.txt
 
 ```
 
-#### From RFMIXv2
+#### Running RFMixv2
 ```
-#Requires RFMIXv2 (https://github.com/slowkoni/rfmix)
+#Requires RFMixv2 (https://github.com/slowkoni/rfmix)
 #Requres Samtools-v1.9 (in PATH)
 #Requires Bcftools (in PATH)
+#Requires R-4.0 (in PATH)
 
-#Download the RFMIXv2 reference panel
+
+#Download the RFMixv2 reference panel
 cd ../data
 for i in {1..22};
 do
 wget http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/1000_genomes_project/release/20190312_biallelic_SNV_and_INDEL/ALL.chr${i}.shapeit2_integrated_snvindels_v2a_27022019.GRCh38.phased.vcf.gz
-
 wget http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/1000_genomes_project/release/20190312_biallelic_SNV_and_INDEL/ALL.chr${i}.shapeit2_integrated_snvindels_v2a_27022019.GRCh38.phased.vcf.gz.tbi
 done
+
+#Download the genetic map (https://alkesgroup.broadinstitute.org/Eagle/#x1-250005.1.2)
+#Download genetic_map_hg38_withX.txt (retain this name)
+#Format the genetic map for our analysis
+cd ../code
+Rscript format_genetic_map.R
+
+
+#Run RFMix
+cd ../code
+bash run_rfmix.sh
+
 
 
 ```
