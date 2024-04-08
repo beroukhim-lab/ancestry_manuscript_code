@@ -10,7 +10,7 @@ The shell scripts in this repository were originally run in a compute environmen
 Download or create the input files and name them as indicated. All input files must be in the ./data directory of this repository.
 Some previously generated input files are restricted access. You must apply for access to get download permissions.
 
-#### From the DepMap web portal: 
+#### From the DepMap web portal (https://depmap.org/portal/download/all/): 
 ```
 21Q4 Achilles Guide Map -> ./data/21q4_Achilles_guide_map.csv 
 21Q4 Achilles Logfold Change -> .data/21q4_Achilles_logfold_change.csv 
@@ -47,6 +47,32 @@ wget https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/genes/hg38.refGene.
 gzip -d hg38.refGene.gtf.gz
 
 ```
+
+#### From COSMIC website
+```
+Download and unpack Cosmic_CancerGeneCensus_Tsv_v97_GRCh38.tar -> ./data/cosmic_genes.csv
+```
+
+#### From gnomAD. Note: Very large
+```
+#Download the hgdp+1kg subset info file
+gsutil cp https://storage.googleapis.com/gcp-public-data--gnomad/release/3.1.2/vcf/genomes/gnomad.genomes.v3.1.2.hgdp_1kg_subset_sample_meta.tsv.bgz ./data
+
+#Download the individualized hgdb+1kg vcf and index files
+for i in {1..22};
+do
+gsutil cp https://storage.googleapis.com/gcp-public-data--gnomad/release/3.1.2/vcf/genomes/gnomad.genomes.v3.1.2.hgdp_tgp.chr${i}.vcf.bgz ./data
+gsutil cp https://storage.googleapis.com/gcp-public-data--gnomad/release/3.1.2/vcf/genomes/gnomad.genomes.v3.1.2.hgdp_tgp.chr${i}.vcf.bgz.tbi ./data
+done
+
+#Download the aggregated vcf and index files
+for i in {1..22};
+do
+gsutil cp https://storage.googleapis.com/gcp-public-data--gnomad/release/3.1.2/vcf/genomes/gnomad.genomes.v3.1.2.sites.chr${i}.vcf.bgz ./data
+gsutil cp https://storage.googleapis.com/gcp-public-data--gnomad/release/3.1.2/vcf/genomes/gnomad.genomes.v3.1.2.sites.chr${i}.vcf.bgz.tbi ./data
+done
+```
+
 
 
 ## Notebook outputs
