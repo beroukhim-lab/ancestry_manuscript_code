@@ -1,0 +1,10 @@
+data/*.csv
+data/*.txt
+data/*.rfmix.Q
+data/*.gz
+data/*.bed
+data/*snps
+data/*bgz
+data/*.gtf
+output/*.txt
+output/*.pdf
