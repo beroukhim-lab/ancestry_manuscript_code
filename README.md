@@ -8,7 +8,7 @@ The shell scripts in this repository were originally run in a compute environmen
 
 ## Generating input files
 Download or create the input files and name them as indicated. All input files must be in the ./data directory of this repository unless otherwise indicated.
-Some previously generated input files are restricted access. You must apply for access to get download permissions.
+Some previously generated input files are restricted access and require the user to apply for download permissions from the respective study. The following code will generate all inputs necessary for running the jupyter notebooks. Many processing steps are compute-intensive, and when possible pre-computed input files are provided in the ./data directory.
 
 #### From the DepMap web portal (https://depmap.org/portal/download/all/): 
 ```
@@ -35,6 +35,14 @@ AvanaGuideMap -> ./data/AvanaGuideMap.csv
 HumagneGuideMap -> ./data/HumagneGUideMap.csv
 KYGUideMap -> ./data/KYGuideMap.csv
 AchillesCommonEssentialControls -> ./data/common_essentials.csv
+```
+
+#### From UCSC genome browser:
+```
+#Download hg38 gtf
+cd ./data
+wget https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/genes/hg38.refGene.gtf.gz
+gzip -d hg38.refGene.gtf.gz
 ```
 
 #### Processing CCLE SNP6 genotyping
@@ -90,7 +98,7 @@ bcftools query -l ccle_all_called.vcf.gz > ../data/ccle.vcf.sample.names.txt
 
 
 #Download the RFMixv2 reference panel
-cd ../data
+cd ./data
 for i in {1..22};
 do
 wget http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/1000_genomes_project/release/20190312_biallelic_SNV_and_INDEL/ALL.chr${i}.shapeit2_integrated_snvindels_v2a_27022019.GRCh38.phased.vcf.gz
@@ -100,16 +108,13 @@ done
 #Download the genetic map (https://alkesgroup.broadinstitute.org/Eagle/#x1-250005.1.2)
 #Download genetic_map_hg38_withX.txt (retain this name)
 #Format the genetic map for our analysis
-cd ../code
+cd ./code
 Rscript format_genetic_map.R
 
 
 #Run RFMix
-cd ../code
+cd ./code
 bash run_rfmix.sh
-
-
-
 ```
 
 #### From R scripts:
@@ -118,6 +123,12 @@ bash run_rfmix.sh
 #Requires R-4.0 (or higher)
 cd ./code
 Rscript create_depmap_cell_lineage_file.R
+
+
+#Create gene.block.matrix.txt
+#Requires R-4.0 (or higher)
+cd ./code
+Rscript create_gene_block_matrix.R
 ```
 
 #### From Doench et. al. 2016
@@ -125,14 +136,6 @@ Rscript create_depmap_cell_lineage_file.R
 Mismatch Tab from Supplemental Table 19 -> ./data/Doench_Data.txt
 ```
 
-#### From UCSC genome browser:
-```
-#Download hg38 gtf
-cd ./data
-wget https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/genes/hg38.refGene.gtf.gz
-gzip -d hg38.refGene.gtf.gz
-
-```
 
 #### From COSMIC website
 ```
