@@ -10,8 +10,8 @@ The shell scripts in this repository were originally run in a compute environmen
 Download or create the input files and name them as indicated. All input files must be in the ./data directory of this repository.
 Some previously generated input files are restricted access. You must apply for access to get download permissions.
 
+####From the DepMap web portal: 
 ```
-From the DepMap web portal: 
 21Q4 Achilles Guide Map -> ./data/21q4_Achilles_guide_map.csv 
 21Q4 Achilles Logfold Change -> .data/21q4_Achilles_logfold_change.csv 
 21Q4 Achilles Replicate Map -> ./data/21q4_Achilles_replicate_map.csv 
@@ -27,14 +27,21 @@ From the DepMap web portal:
 23q4 Omics Signatures -> ./data/23q4_omics_signatures.csv
 22q2 CRISPR Gene Effect -> ./data/22q2_crispr_gene_effect.csv
 23q4 OmicsSignatures -> ./data/23q4_omics_signatures.csv
+```
 
-From jupyter notebooks:
+####From jupyter notebooks:
+```
 figure_1d.ipynb -> ./data/lm_ancestry_associated_dependency_pvals.txt
+```
 
-From shell scripts:
 
+####From shell scripts:
+```
+```
 
-From UCSC genome browser:
+####From UCSC genome browser:
+```
+#Download hg38 gtf
 cd ./data
 wget https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/genes/hg38.refGene.gtf.gz
 gzip -d hg38.refGene.gtf.gz
