@@ -1,0 +1,108 @@
+#Set up the environment
+library(tidyverse)
+library(reshape2)
+library(janitor)
+library(data.table)
+
+
+
+#Make a vector of all of the ancestry-associated genes
+setwd("../data")
+ancestry.associated.gene.vector = read.table("lm_ancestry_associated_dependency_pvals.txt", sep = "\t", header = TRUE) %>%
+filter(afr_fdr < 0.05 | amr_fdr < 0.05 | eas_fdr < 0.05 | eur_fdr < 0.05 | sas_fdr < 0.05) %>%
+pull(gene) %>%
+unique()
+
+
+#Load in the pre-correction chronos scores
+chronos.22q1 = fread("22q1_crispr_gene_effect.csv", sep = ",", header = T, check.names = FALSE) %>%
+rename("sample" = 1)
+
+
+#Create a GWAS phenotype file
+gwas.phenotype.file = chronos.22q1 %>%
+rename("IID" = sample) %>%
+select(IID, all_of(ancestry.associated.gene.vector))
+
+
+#Write the file
+setwd("../data")
+write.table(gwas.phenotype.file, "chronos_gwas_phenotypes.pheno", sep = "\t", col.names = TRUE, row.names = FALSE, quote = FALSE)
+
+
+#Convert the vcf to plink format
+system(glue::glue("
+cd ../data
+plink2 --file ccle_all_called.vcf.gz --make-bed --out ccle_all_called
+"))
+
+
+#Run GWAS
+system(glue::glue("
+cd ../data
+plink2 --allow-extra-chr --bfile ccle_all_called --maf 0.01 --glm hide-covar --pfilter 1 --covar 'iid-only' depmap.cov --pheno ../data/chronos_gwas_phenotypes.pheno --out ../data
+"))
+
+
+#Load in all of the GWAS data and create a data matrix
+setwd("../data")
+file.list = list.files(path = ".", pattern = "glm.linear")
+
+#extract the SNP IDs from the dataset
+all.data = read.table(file.list[1], sep = "\t") %>%
+pull(3) %>%
+data.frame()
+
+for(file in file.list){
+
+    #Load in the file and select only the p-value column
+    temp.file = read.table(file, sep = "\t") %>%
+    pull(12) %>%
+    data.frame()
+    
+    #Add the pvalues to the big file
+    all.data = cbind(all.data, temp.file)
+}
+
+
+#Set the names correctly
+#First, get a vector of names
+col.name.vector = gsub("output.", "", file.list) %>%
+gsub(".glm.linear", "", .) %>%
+c("snp", .)
+colnames(all.data) = col.name.vector #Assign the names
+head(all.data)
+
+#Write out the file so that we don't need to re-load and merge everything again
+setwd("../data")
+write.table(all.data, "merged.pvals.txt", sep = "\t", col.names = TRUE, row.names = FALSE, quote = FALSE)
+
+
+#Create a dataset that has the top snp for all of the ancestry-associated genes
+top.snp.df = NULL
+for(i in 1:length(ancestry.associated.gene.vector)){
+    
+    #Get the gene of interest from this iteration of the loop
+    gene.of.interest = ancestry.associated.gene.vector[i]
+    
+    #Create a small dataset with only the snp of interest
+    subset.df = all.data %>%
+    select(snp, all_of(gene.of.interest)) %>%
+    rename("pval" = 2) %>%
+    arrange(pval) %>%
+    mutate("fdr" = p.adjust(pval, method = "BY", n = length(pval))) %>%
+    head(n = 1)
+    
+    #Add it to the df outside of the loop
+    top.snp.df = rbind(top.snp.df, subset.df)
+    
+}
+
+
+#Add in the gene name
+top.snp.df = top.snp.df %>% mutate("gene" = ancestry.associated.gene.vector, .before = 1)
+
+
+#Write top.snp.df so that we can load it back in for other analyses
+setwd("../data")
+write.table(top.snp.df, "ancestry_top_snp_df.txt", sep = "\t", col.names = TRUE, row.names = FALSE, quote = FALSE)

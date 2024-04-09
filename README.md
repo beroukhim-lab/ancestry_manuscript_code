@@ -72,7 +72,7 @@ bash process_ccle_genotyping.sh
 ############
 #Step 1) Perform genotype phasing and imputation using the Michigan Imputation Server
 #Step 2) Download and unzip the phased/imputed vcf files. The zipped file is password protected, follow unpacking instructions.
-#Step 3) Add the 'pe_' prefix to the 
+#Step 3) Add the 'pe_' prefix to the phased/imputed vcf files.
 
 
 #Cat the phased/imputed vcfs, pass filter, then zip and index
@@ -81,6 +81,8 @@ bcftools concat -o ccle_snp6_phased_imputed.vcf pe_*
 bcftools view -f PASS ccle_snp6_phased_imputed.vcf > ccle_all_called.vcf
 bgzip ccle_all_called.vcf
 tabix -p vcf ccle_all_called.vcf.gz
+cp ccle_all_called.vcf.gz ../data
+cp ccle_all_called.vcf.gz.tbi ../data
 
 
 #Extract the sample headers, which is a useful input for many scripts
@@ -129,6 +131,27 @@ Rscript create_depmap_cell_lineage_file.R
 #Requires R-4.0 (or higher)
 cd ./code
 Rscript create_gene_block_matrix.R
+
+
+#Create ancestry_top_snp_df.txt and merged.pvals.txt
+#Requires R-4.0 (or higher)
+#Requires PLINK 2.0 (in PATH)
+cd ./code
+Rscript create_ancestry_top_snp_df.txt
+
+
+#Create merged_frequency_dataset.txt and ccle.ancestry.snps.vcf.gz
+#Requires R-4.0 (or higher)
+#Requires Bcftools (in PATH)
+cd ./code
+Rscript create_merged_frequency_dataset.R
+
+
+#Create collapsed.ancestry.information.txt
+#Requires R-4.0 (or higher)
+cd ./code
+Rscript create_collapsed_ancestry_information.R
+
 ```
 
 #### From Doench et. al. 2016
