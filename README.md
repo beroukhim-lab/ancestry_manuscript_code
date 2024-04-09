@@ -37,6 +37,20 @@ KYGUideMap -> ./data/KYGuideMap.csv
 AchillesCommonEssentialControls -> ./data/common_essentials.csv
 ```
 
+#### CCLE WGS (Note: Controlled access)
+```
+#Get access to the CCLE WGS controlled access data
+#Download the files listed in ./ccle_wgs/wgs_file_names.txt
+#Store all files in ./ccle_wgs/
+
+#Create num_shared.txt
+#Create num_snp6_only.txt
+#Create num_wgs_only.txt
+#Requires Bcftools (in PATH)
+bash compute_intersections.sh
+
+```
+
 #### From UCSC genome browser:
 ```
 #Download hg38 gtf
