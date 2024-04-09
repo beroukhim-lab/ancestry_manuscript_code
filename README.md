@@ -45,6 +45,35 @@ wget https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/genes/hg38.refGene.
 gzip -d hg38.refGene.gtf.gz
 ```
 
+#### TCGA somatic data from gdc portal (portal.gdc.cancer.gov)
+```
+#Download the somatic mutation calls listed in ./tcga_somatic/vcf_sample_sheet.tsv
+#Store all files in ./tcga_somatic/
+
+#Filter the files to only include variants that map to avana guides
+cd ./code
+bash create_avana_filtered_tcga_somatic.sh
+```
+
+#### TCGA germline variant calls (note: restricted access)
+```
+#TCGA germline variant calls are included as part of the following manuscript:
+#Pathogenic germline variants in 10,389 adult cancers
+#PMID: 29625052
+#Download the variant call file (name = PCA.r1.TCGAbarcode.merge.tnSwapCorrected.10389.vcf.gz). Store in ./tcga_germline/
+
+#Extract the sample names
+#Requires Bcftools (in PATH)
+cd ./code
+bash extract_tcga_germline_sample_names.sh
+
+#Filter the germline variant calls to include only variants in avana guides
+#Requires Bcftools (in PATH)
+cd ./code
+bash extract_tcga_germline_variants_in_avana_guides.sh
+```
+
+
 #### Processing CCLE SNP6 genotyping
 ```
 #Requires Python-3.6 (must be in PATH)
@@ -91,7 +120,16 @@ bcftools query -l ccle_all_called.vcf.gz > ../data/ccle.vcf.sample.names.txt
 
 ```
 
-#### Running RFMixv2
+#### Guide library filtering
+```
+#Filter the CCLE variant calls (ccle_all_called.vcf.gz) to retain only SNPS in Avana guides
+#This script will create 'snps.in.all.avana.guides.vcf.gz'
+#Requires Bcftools (in PATH)
+cd ./code
+bash create_snps_in_all_avana_guides_vcf.sh
+```
+
+#### Running RFMix-v2
 ```
 #Requires RFMixv2 (https://github.com/slowkoni/rfmix)
 #Requres Samtools-v1.9 (in PATH)
@@ -108,7 +146,7 @@ wget http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/1000_genomes_pro
 done
 
 #Download the genetic map (https://alkesgroup.broadinstitute.org/Eagle/#x1-250005.1.2)
-#Download genetic_map_hg38_withX.txt (retain this name)
+#Download genetic_map_hg38_withX.txt (retain this name) and put in ./data
 #Format the genetic map for our analysis
 cd ./code
 Rscript format_genetic_map.R
@@ -152,6 +190,43 @@ Rscript create_merged_frequency_dataset.R
 cd ./code
 Rscript create_collapsed_ancestry_information.R
 
+
+#Create snv_position_single_guide_finaldf.txt
+#Requires R-4.0 (or higher)
+cd ./code
+Rscript create_snv_position_single_guide_finaldf.R
+
+
+#Create chronos_22q1_ancestry_associated_dependency_pvals.txt
+#Create chronos_22q2_ancestry_associated_dependency_pvals.txt
+#Requires R-4.0 (or higher)
+cd ./code
+Rscript create_chronos_22q1_22q2_ancestry_associated_dependency_pvals.R
+
+
+#Create ccle_snp6_ancestry_calls.txt
+#Requires R-4.0 (or higher)
+cd ./code
+Rscript create_ccle_snp6_ancestry_calls.R
+
+
+#Create affected_guides_per_gnomad_sample.txt
+#Require R-4.0 (or higher)
+cd ./code
+Rscript create_affected_guides_per_gnomad_sample.R
+
+
+#Create top_snp_for_extraction.txt
+#Requires R-4.0 (or higher)
+cd ./code
+Rscript create_top_snp_for_extraction.R
+
+
+#Create top.snp.fdr.txt
+#Create merged.pvals.txt
+#Requires R-4.0 (or higher)
+cd ./code
+Rscript create_top_snp_fdr.R
 ```
 
 #### From Doench et. al. 2016
@@ -223,7 +298,7 @@ figure_3c.ipynb -> figure_3c_avana_affected_rate.txt
 figure_3d.ipynb -> figure_3d.pdf
 figure_3d.ipynb -> figure_3d.pdf
 figure_3d.ipynb -> figure_3d_germline_somatic.txt
-figure_3e_supplementalfigure_8.ipynb -> figure_3e_snp_in_guide.txt
+figure_3e_supplementalfigure_8.ipynb -> snv_position_single_guide_finaldf.txt
 figure_3e_supplementalfigure_8.ipynb -> figure_3e.pdf
 figure_3e_supplementalfigure_8.ipynb -> figure3_plotting_df.txt
 figure_3e_supplementalfigure_8.ipynb -> supplemental_figure_8.pdf
