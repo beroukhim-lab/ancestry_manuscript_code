@@ -5,6 +5,12 @@ file2="../data/ccle.vcf.sample.names"
 comm -12 <(sort "$file1") <(sort "$file2") > intersecting_wgs_snp6_samples.txt
 
 
+#Create a file named directory_names.txt.
+#It is easier to do this than it is to modify the other script
+#Also put it in the ../data directory
+cp intersecting_wgs_snp6_samples.txt ../data/directory_names.txt
+
+
 #Loop through all of the files and calculate the intersection
 cd ../ccle_wgs/
 while IFS= read -r line; do
