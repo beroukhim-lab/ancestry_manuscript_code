@@ -6,6 +6,50 @@ All jupyter notebooks were originally run in a GCP VM environment with 64 GB of 
 
 The shell scripts in this repository were originally run in a compute environment with 32 CPU cores and 128 GB of memory. These scripts have been modified to run on a single CPU core (at a significant time cost), but can be modified to run in parallel.
 
+
+## Simple Startup
+For simplicity, critical input and intermediate files are provided in this github repository or are hosted on figshare. Many of these files have significant compute requirements to generate. Full descriptions on how to generate these inputs are below, but using the pre-generated inputs is strongly recommended.
+
+To get started, clone this github repository and download inputs from figshare as follows:
+```
+#From DepMap figshare
+wget -O ./data/21q4_Achilles_guide_map.csv https://figshare.com/ndownloader/files/31315819
+wget -O .data/21q4_Achilles_logfold_change.csv https://figshare.com/ndownloader/files/31315903 
+wget -O ./data/21q4_Achilles_replicate_map.csv https://figshare.com/ndownloader/files/31315876 
+wget -O ./data/21q4_crispr_gene_effect.csv https://figshare.com/ndownloader/files/31315996 
+wget -O ./data/22q1_Achilles_gene_effect.csv https://figshare.com/ndownloader/files/34008383 
+wget -O ./data/22q1_Achilles_guide_map.csv https://figshare.com/ndownloader/files/34008362 
+wget -O ./data/22q1_Achilles_logfold_change.csv https://figshare.com/ndownloader/files/34008443 
+wget -O ./data/22q1_Achilles_replicate_map.csv https://figshare.com/ndownloader/files/34008398 
+wget -O ./data/22q1_CCLE_gene_cn.csv https://figshare.com/ndownloader/files/34008428 
+wget -O ./data/22q1_crispr_gene_effect.csv https://figshare.com/ndownloader/files/34008491 
+wget -O ./data/22q1_expression.csv https://figshare.com/ndownloader/files/34008404 
+wget -O ./data/22q1_sample_info.csv https://figshare.com/ndownloader/files/34008503 
+wget -O ./data/22q2_crispr_gene_effect.csv https://figshare.com/ndownloader/files/34990036 
+wget -O ./data/OmicsGuideMutationsBinaryKY.csv https://plus.figshare.com/ndownloader/files/43347465 
+wget -O ./data/OmicsGuideMutationsBinaryHumagne.csv https://plus.figshare.com/ndownloader/files/43347432 
+wget -O ./data/OmicsGuideMutationsBinaryAvana.csv https://plus.figshare.com/ndownloader/files/43347378 
+wget -O ./data/AvanaGuideMap.csv https://plus.figshare.com/ndownloader/files/43346391 
+wget -O ./data/HumagneGuideMap.csv https://plus.figshare.com/ndownloader/files/43346748 
+wget -O ./data/KYGuideMap.csv https://plus.figshare.com/ndownloader/files/43346769 
+wget -O ./data/common_essentials.csv https://plus.figshare.com/ndownloader/files/43346361 
+
+#From figshare for this paper
+wget -O ./data/final_avana.txt https://figshare.com/ndownloader/files/45747036 
+wget -O ./data/final_moffat.txt https://figshare.com/ndownloader/files/45747045 
+wget -O ./data/genetic_map_hg38_withX.txt https://figshare.com/ndownloader/files/45746991 
+wget -O ./data/final_custom_library.txt https://figshare.com/ndownloader/files/45747039 
+wget -O ./data/final_dolcetto.txt https://figshare.com/ndownloader/files/45747054 
+wget -O ./data/gene.block.matrix.txt https://figshare.com/ndownloader/files/45747027 
+wget -O ./data/avana.filtered.ccle.variant.calls.vcf.gz https://figshare.com/ndownloader/files/45747048 
+wget -O ./data/final_sanger.txt https://figshare.com/ndownloader/files/45747003 
+wget -O ./data/final_gecko.txt https://figshare.com/ndownloader/files/45747006 
+wget -O ./data/final_minlibcas.txt https://figshare.com/ndownloader/files/45747024 
+wget -O ./data/final_calabrese.txt https://figshare.com/ndownloader/files/45746943 
+```
+
+
+
 ## Generating input files
 Download or create the input files and name them as indicated. All input files must be in the ./data directory of this repository unless otherwise indicated.
 Some previously generated input files are restricted access and require the user to apply for download permissions from the respective study. The following code will generate all inputs necessary for running the jupyter notebooks. Many processing steps are compute-intensive, and when possible pre-computed input files are provided in the ./data directory.
