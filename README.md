@@ -48,7 +48,9 @@ wget -O ./data/final_minlibcas.txt https://figshare.com/ndownloader/files/457470
 wget -O ./data/final_calabrese.txt https://figshare.com/ndownloader/files/45746943 
 ```
 
+At this point you can now run the following notebooks:
 
+The following notebooks require additional input files (detailed below) before they can be run. These notebooks require protected access data as an input, which needs to be downloaded manually.
 
 ## Generating input files
 Download or create the input files and name them as indicated. All input files must be in the ./data directory of this repository unless otherwise indicated.
